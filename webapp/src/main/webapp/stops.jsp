@@ -1,8 +1,8 @@
 <%@page import="java.util.Collections"%>
-<%@page import="it.polito.ai.es03.model.BusLineStop"%>
+<%@page import="it.polito.ai.es03.model.postgis.BusLineStop"%>
 <%@page import="it.polito.ai.es03.listeners.AppListener"%>
 <%@page import="it.polito.ai.es03.services.LinesService"%>
-<%@page import="it.polito.ai.es03.model.BusStop"%>
+<%@page import="it.polito.ai.es03.model.postgis.BusStop"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>

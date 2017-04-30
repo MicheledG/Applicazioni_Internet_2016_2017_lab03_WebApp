@@ -7,10 +7,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
-import it.polito.ai.es03.model.BusLine;
-import it.polito.ai.es03.model.BusLineStop;
-import it.polito.ai.es03.model.BusStop;
-import it.polito.ai.es03.model.HibernateUtil;
+import it.polito.ai.es03.model.postgis.BusLine;
+import it.polito.ai.es03.model.postgis.BusLineStop;
+import it.polito.ai.es03.model.postgis.BusStop;
+import it.polito.ai.es03.model.postgis.HibernateUtil;
 
 public class LinesServiceImpl implements LinesService {
 	
@@ -77,5 +77,45 @@ public class LinesServiceImpl implements LinesService {
 		return stoppingLines;
 	}
 
+	public BusLine getBusLine(String lineId) {
+		Session session = sessionFactory.getCurrentSession();
+		BusLine busLine = (BusLine) session.get(BusLine.class, lineId);
+		return busLine;
+	}
 
+	public BusStop getBusStop(String stopId) {
+		Session session = sessionFactory.getCurrentSession();
+		BusStop busStop = (BusStop) session.get(BusStop.class, stopId);
+		return busStop;
+	}
+
+	//coordinates[0] -> LATITUDE
+	//coordinates[1] -> LONGITUDE
+	public List<BusStop> findStopsInRadius(double[] coordinates, int radius) {
+		
+		Session session = sessionFactory.getCurrentSession();
+		List<BusStop> busStops = new ArrayList<BusStop>();
+		
+		//compute distance between stops within the radius
+		String textGeometry = "ST_GeographyFromText('SRID=4326;POINT("+coordinates[1]+" "+coordinates[0]+")')";
+		String stringQuery = "select id "
+				+ "from busstopgeo "
+				+ "where ST_DWithin(position, "+coordinates[1]+" "+textGeometry+", "+radius+");";
+		List<Object> result = session.createSQLQuery(stringQuery).list();
+		
+		for (Object object : result) {
+			String stopId = (String) object; 
+			//insert into the graph
+			BusStop busStop = getBusStop(stopId);
+			if(busStop != null)
+				busStops.add(busStop);
+    	}
+		
+		if(busStops.size() == 0)
+			return null;
+		else
+			return busStops;
+	}
+	
+	
 }

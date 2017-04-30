@@ -1,4 +1,4 @@
-package it.polito.ai.es03.model;
+package it.polito.ai.es03.model.postgis;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;

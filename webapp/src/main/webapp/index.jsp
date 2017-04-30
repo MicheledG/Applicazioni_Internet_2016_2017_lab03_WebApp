@@ -1,6 +1,6 @@
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Collection"%>
-<%@page import="it.polito.ai.es03.model.BusLine"%>
+<%@page import="it.polito.ai.es03.model.postgis.BusLine"%>
 <%@page import="java.util.List"%>
 <%@page import="it.polito.ai.es03.services.LinesService"%>
 <%@page import="it.polito.ai.es03.listeners.AppListener"%>

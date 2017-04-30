@@ -1,4 +1,4 @@
-package it.polito.ai.es03.model;
+package it.polito.ai.es03.model.postgis;
 
 import java.util.ArrayList;
 import java.util.List;

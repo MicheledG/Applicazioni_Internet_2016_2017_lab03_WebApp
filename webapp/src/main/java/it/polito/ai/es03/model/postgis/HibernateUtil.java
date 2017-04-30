@@ -1,4 +1,4 @@
-package it.polito.ai.es03.model;
+package it.polito.ai.es03.model.postgis;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
