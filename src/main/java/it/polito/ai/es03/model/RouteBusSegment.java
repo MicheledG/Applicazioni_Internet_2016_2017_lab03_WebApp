@@ -1,18 +1,19 @@
 package it.polito.ai.es03.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RouteBusSegment extends RouteSegment {
 
-	private List<RouteBusSegmentPortion> busSubSegments;
+	private List<RouteBusSegmentPortion> routeBusSegmentPortions = new ArrayList<RouteBusSegmentPortion>();
 
-	public List<RouteBusSegmentPortion> getBusSubSegments() {
-		return busSubSegments;
+	public List<RouteBusSegmentPortion> getRouteBusSegmentPortions() {
+		return routeBusSegmentPortions;
 	}
 
-	public void setBusSubSegments(List<RouteBusSegmentPortion> busSubSegments) {
-		this.busSubSegments = busSubSegments;
-		
+	public void setRouteBusSegmentPortions(List<RouteBusSegmentPortion> routeBusSegmentPortions) {
+		this.routeBusSegmentPortions = routeBusSegmentPortions;
 	}
+
 	
 }

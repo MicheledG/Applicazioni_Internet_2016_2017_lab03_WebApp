@@ -1,6 +1,7 @@
 package it.polito.ai.es03.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -115,6 +116,36 @@ public class LinesServiceImpl implements LinesService {
 			return null;
 		else
 			return busStops;
+	}
+
+	public List<String> findLinesConnectingStops(BusStop a, BusStop b) {
+		
+		List<String> lines = new ArrayList<String>();
+		
+		for (BusLineStop stoppingLineA : a.getStoppingLines()) {
+			String lineId = stoppingLineA.getBusLine().getLine();
+			int thisStopSequenceNumber = stoppingLineA.getSequenceNumber();
+			BusStop nextStop = getBusLineStop(lineId, thisStopSequenceNumber+1);
+			if(b.equals(nextStop)){
+				lines.add(lineId);
+			}
+		}
+		
+		if(lines.size() == 0)
+			return null;
+		else
+			return lines;
+	}
+
+	public BusStop getBusLineStop(String lineId, int sequenceNumber) {
+		List<BusLineStop> stops = getBusLine(lineId).getLineStops();
+		
+		Collections.sort(stops);
+		
+		if(sequenceNumber<0 || sequenceNumber >= stops.size())
+			return null;
+		else
+			return stops.get(sequenceNumber).getBusStop();
 	}
 	
 	
