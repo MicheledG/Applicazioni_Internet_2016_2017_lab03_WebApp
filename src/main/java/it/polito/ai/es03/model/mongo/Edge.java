@@ -1,9 +1,10 @@
 package it.polito.ai.es03.model.mongo;
+
 /**
  * Questa classe non rappresenta l'arco di un grafo,
  * ma una tratta di un percorso.
  * */
-public class Edge {
+public class Edge implements Comparable<Edge>{
 	
 	/**
 	 * Id della fermata (BusStop) di partenza
@@ -26,6 +27,7 @@ public class Edge {
 	 * Costo dell'arco
 	 * */
 	private int cost;
+	private int sequenceNumber;
 	
 	public String getIdSource() {
 		return idSource;
@@ -50,5 +52,16 @@ public class Edge {
 	}
 	public void setCost(int cost) {
 		this.cost = cost;
+	}
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+	public int compareTo(Edge o) {
+		Integer thisSequenceNumber = this.sequenceNumber;
+		Integer thatSequenceNumber = o.getSequenceNumber();
+		return thisSequenceNumber.compareTo(thatSequenceNumber);
 	}
 }

@@ -20,6 +20,7 @@ import it.polito.ai.es03.model.RouteBusSegmentPortion;
 import it.polito.ai.es03.model.RouteSegment;
 import it.polito.ai.es03.model.mongo.Edge;
 import it.polito.ai.es03.model.mongo.MinPath;
+import it.polito.ai.es03.model.mongo.MongoUtil;
 import it.polito.ai.es03.model.postgis.BusStop;
 
 public class RoutingServiceImpl implements RoutingService {
@@ -32,6 +33,7 @@ public class RoutingServiceImpl implements RoutingService {
 	
 	public RoutingServiceImpl(LinesService linesService){
 		this.linesService = linesService;
+		this.mongoClient = MongoUtil.getMongoClient();
 	}
 	
 	public Route findRoute(double[] startCoordinates, double[] arriveCoordinates, int radius) {
@@ -54,11 +56,7 @@ public class RoutingServiceImpl implements RoutingService {
 		
 		//determine the segments of the route based on the best path
 		List<RouteSegment> routeSegments;
-		try{
-			routeSegments = computeRouteSegments(bestPath);
-		} catch (Exception e) {
-			return null;
-		}
+		routeSegments = computeRouteSegments(bestPath);
 		
 		Route route = new Route();
 		route.setSegments(routeSegments);
@@ -201,6 +199,7 @@ public class RoutingServiceImpl implements RoutingService {
 	private List<RouteSegment> defineRouteSegments(MinPath path) {
 		
 		List<RouteSegment> routeSegments = new ArrayList<RouteSegment>();
+		Collections.sort(path.getEdges());
 		
 		for (Edge edge : path.getEdges()) {
 			

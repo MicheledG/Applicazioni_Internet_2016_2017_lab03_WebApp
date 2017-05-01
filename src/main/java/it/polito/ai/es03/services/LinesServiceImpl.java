@@ -101,7 +101,7 @@ public class LinesServiceImpl implements LinesService {
 		String textGeometry = "ST_GeographyFromText('SRID=4326;POINT("+coordinates[1]+" "+coordinates[0]+")')";
 		String stringQuery = "select id "
 				+ "from busstopgeo "
-				+ "where ST_DWithin(position, "+coordinates[1]+" "+textGeometry+", "+radius+");";
+				+ "where ST_DWithin(position, "+textGeometry+", "+radius+");";
 		List<Object> result = session.createSQLQuery(stringQuery).list();
 		
 		for (Object object : result) {
