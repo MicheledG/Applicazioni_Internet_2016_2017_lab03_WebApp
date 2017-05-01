@@ -25,6 +25,8 @@ import it.polito.ai.es03.model.postgis.BusStop;
 
 public class RoutingServiceImpl implements RoutingService {
 	
+	private static final int FOOT_COEFF = 1; //m/s
+	
 	private static final String MONGO_DB_NAME = "trasporti";
 	private static final String MONGO_MIN_PATHS_COLLECTION = "MinPaths";
 	
@@ -47,7 +49,7 @@ public class RoutingServiceImpl implements RoutingService {
 		}
 		
 		//select the cheaper minimum path
-		MinPath bestPath = selectBestPath(minPaths);
+		MinPath bestPath = selectBestPath(minPaths, startCoordinates, arriveCoordinates);
 		
 		if(bestPath == null){
 			//no path between start and arrive point
@@ -60,6 +62,8 @@ public class RoutingServiceImpl implements RoutingService {
 		
 		Route route = new Route();
 		route.setSegments(routeSegments);
+		route.setStartCoordinates(startCoordinates);
+		route.setArriveCoordinates(arriveCoordinates);
 		return route;
 		
 	}
@@ -245,7 +249,22 @@ public class RoutingServiceImpl implements RoutingService {
 		return routeSegments;
 	}
 
-	private MinPath selectBestPath(List<MinPath> minPaths) {
+	private MinPath selectBestPath(List<MinPath> minPaths, double[] startCoordinates, double[] arriveCoordinates) {
+		
+		for (MinPath minPath : minPaths) {
+			String firstStop = minPath.getIdSource();
+			String lastStop = minPath.getIdDestination();
+			
+			double startPointToMinPathDistance = linesService.getDistanceFromBusStop(startCoordinates, firstStop);
+			double stopPointtoMinPathDistance = linesService.getDistanceFromBusStop(arriveCoordinates, lastStop);
+			
+			int overheadCost = ((Double) ((startPointToMinPathDistance + stopPointtoMinPathDistance) / FOOT_COEFF)).intValue();
+			 
+			int initialPathCost = minPath.getTotalCost();
+			minPath.setTotalCost(initialPathCost + overheadCost);
+		}
+		
+		
 		Collections.sort(minPaths);
 		return minPaths.get(0);
 	}

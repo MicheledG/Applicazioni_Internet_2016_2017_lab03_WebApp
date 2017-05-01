@@ -1,0 +1,1 @@
+http://localhost:8080/ai_esercitazione_03_WebApp/route.jsp?startLat=45.073751&startLng=7.600959&arriveLat=45.074289&arriveLng=7.614928&radius=250

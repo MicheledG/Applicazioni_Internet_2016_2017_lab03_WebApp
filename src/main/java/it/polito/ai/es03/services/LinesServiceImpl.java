@@ -147,6 +147,24 @@ public class LinesServiceImpl implements LinesService {
 		else
 			return stops.get(sequenceNumber).getBusStop();
 	}
+
+	public double getDistanceFromBusStop(double[] coordinates, String stopId) {
+		
+		//compute distance between this stop and next stop
+		String textGeometry = "ST_GeographyFromText('SRID=4326;POINT("+coordinates[1]+" "+coordinates[0]+")')";
+		String stringQuery = "select ST_Distance("+textGeometry+", position) as distance "
+				+ "from busstopgeo "
+				+ "where id = '"+stopId+"';";
+		Session session = sessionFactory.getCurrentSession();
+		List<Object> result = session.createSQLQuery(stringQuery).list();    		
+		double distance = -1;
+		for (Object object : result) {
+			distance = (Double) object;
+		}
+		
+		return distance;
+
+	}
 	
 	
 }

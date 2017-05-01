@@ -17,6 +17,7 @@ public interface LinesService {
 	public List<BusLineStop> getStoppingLines(String stopId);
 	//coordinates[0] -> LATITUDE
 	//coordinates[1] -> LONGITUDE
+	public double getDistanceFromBusStop(double[] coordinates, String stopId);
 	public List<BusStop> findStopsInRadius(double[] coordinates, int radius);
 	public List<String> findLinesConnectingStops(BusStop a, BusStop b);
 	
