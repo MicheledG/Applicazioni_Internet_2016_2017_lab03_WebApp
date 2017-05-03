@@ -126,7 +126,8 @@ public class LinesServiceImpl implements LinesService {
 			String lineId = stoppingLineA.getBusLine().getLine();
 			int thisStopSequenceNumber = stoppingLineA.getSequenceNumber();
 			BusStop nextStop = getBusLineStop(lineId, thisStopSequenceNumber+1);
-			if(b.equals(nextStop)){
+			if(b.equals(nextStop) && !lines.contains(lineId)){
+				//the second condition is used to solve DB corruption! -> duplicate lines
 				lines.add(lineId);
 			}
 		}
@@ -142,10 +143,10 @@ public class LinesServiceImpl implements LinesService {
 		
 		Collections.sort(stops);
 		
-		if(sequenceNumber<0 || sequenceNumber >= stops.size())
+		if(sequenceNumber<1 || sequenceNumber > stops.size())
 			return null;
 		else
-			return stops.get(sequenceNumber).getBusStop();
+			return stops.get(sequenceNumber-1).getBusStop();
 	}
 
 	public double getDistanceFromBusStop(double[] coordinates, String stopId) {

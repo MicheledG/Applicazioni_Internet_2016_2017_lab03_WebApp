@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bson.Document;
-import org.hibernate.engine.jdbc.Size;
 
 import com.google.gson.Gson;
 import com.mongodb.MongoClient;
@@ -18,6 +17,7 @@ import it.polito.ai.es03.model.Route;
 import it.polito.ai.es03.model.RouteBusSegment;
 import it.polito.ai.es03.model.RouteBusSegmentPortion;
 import it.polito.ai.es03.model.RouteSegment;
+import it.polito.ai.es03.model.TakenBus;
 import it.polito.ai.es03.model.mongo.Edge;
 import it.polito.ai.es03.model.mongo.MinPath;
 import it.polito.ai.es03.model.mongo.MongoUtil;
@@ -102,6 +102,9 @@ public class RoutingServiceImpl implements RoutingService {
 			if(listOfLines == null){
 				//TODO
 			}
+			else{
+				listOfLinesForPortions.add(listOfLines);
+			}
 		}
 		
 		//find the best combination of lines to cover the entire RouteBusSegment defining 
@@ -137,6 +140,53 @@ public class RoutingServiceImpl implements RoutingService {
 	}
 
 	private List<String> computeBestCombinationOfLines(List<List<String>> listOfLinesForPortions) {
+		//idea: take a bus and stay on it for the major number of stops!
+		List<String> bestCombination = new ArrayList<String>();
+		
+		int portionIndex = 0;
+		int numberOfPortions = listOfLinesForPortions.size();
+		while(portionIndex < numberOfPortions){
+			TakenBus takenBus = takeBus(listOfLinesForPortions, portionIndex);
+			String lineId = takenBus.getLineId();
+			int coveredPortions = takenBus.getNumberOfCoveredPortions();
+			for(int j = portionIndex; j < portionIndex + coveredPortions; j++){
+				bestCombination.add(lineId);
+			}
+			portionIndex += coveredPortions;
+		}
+		
+		return bestCombination;
+	}
+	
+	private TakenBus takeBus(List<List<String>> listOfLinesForPortions, int portionIndex) {
+		//idea: take a bus and stay on it for the major number of stops!
+		List<TakenBus> takenBuses = new ArrayList<TakenBus>();
+		
+		for(String lineId: listOfLinesForPortions.get(portionIndex)){
+			//each line considered right here covers the first portion!
+			TakenBus takenBus = new TakenBus();
+			takenBus.setLineId(lineId);
+			takenBus.setNumberOfCoveredPortions(1);
+			for(int i=portionIndex+1; i < listOfLinesForPortions.size(); i++){
+				if(listOfLinesForPortions.get(i).contains(lineId)){
+					//in the list of the lines covering this portion there is also the line covering the preceding portion
+					int coveredPortions = takenBus.getNumberOfCoveredPortions() + 1;
+					takenBus.setNumberOfCoveredPortions(coveredPortions);
+				}
+				else{
+					//this line has no other portions to cover!
+					break;
+				}
+			}
+			takenBuses.add(takenBus);
+		}
+		
+		//chose the bus which covers the major number of portions
+		Collections.sort(takenBuses, Collections.reverseOrder());
+		return takenBuses.get(0);
+	}
+
+	private List<String> computeBestCombinationOfLinesOld(List<List<String>> listOfLinesForPortions) {
 		//compute all the possible combination of lines to cover all the portions
 		List<List<String>> combinations = new ArrayList<List<String>>();
 		generateCombinations(listOfLinesForPortions, combinations, 0, null);
@@ -149,23 +199,26 @@ public class RoutingServiceImpl implements RoutingService {
 	
 	private List<String> selectBestCombination(List<List<String>> combinations) {
 		
-		int bestCombinationIndex = -1;
-		int minimumNumberChanges = -1;
-		for (int i = 0; i < combinations.size(); i++) {
-			int numberOfChanges = countChanges(combinations.get(i));
-			if(i == 0){
-				bestCombinationIndex = 0;
-				minimumNumberChanges = numberOfChanges;
-			}
-			else{
-				if(numberOfChanges < minimumNumberChanges){
-					bestCombinationIndex = i;
-					minimumNumberChanges = numberOfChanges;
-				}
-			}
-		}
+//		int bestCombinationIndex = -1;
+//		int minimumNumberChanges = -1;
+//		for (int i = 0; i < combinations.size(); i++) {
+//			int numberOfChanges = countChanges(combinations.get(i));
+//			if(i == 0){
+//				bestCombinationIndex = 0;
+//				minimumNumberChanges = numberOfChanges;
+//			}
+//			else{
+//				if(numberOfChanges < minimumNumberChanges){
+//					bestCombinationIndex = i;
+//					minimumNumberChanges = numberOfChanges;
+//				}
+//			}
+//		}
+//		
+//		return combinations.get(bestCombinationIndex);
 		
-		return combinations.get(bestCombinationIndex);
+		return combinations.get(0);
+		
 	}
 
 	private int countChanges(List<String> combination) {
@@ -188,11 +241,16 @@ public class RoutingServiceImpl implements RoutingService {
 
 	    for(int i = 0; i < listOfLinesForPortions.get(depth).size(); ++i)
 	    {
-	        List<String> updatedCombination = new ArrayList<String>();
+	        if(i > 0)
+	        	continue;
+	    	
+	    	
+	    	List<String> updatedCombination;
 	    	if(currentCombination != null){
-	    		for (String string : currentCombination) {
-		    		updatedCombination.add(string);
-				}
+	    		updatedCombination = new ArrayList<String>(currentCombination);
+	    	}
+	    	else{
+	    		updatedCombination = new ArrayList<String>();
 	    	}
 	    	String lineId = listOfLinesForPortions.get(depth).get(i);
 	        updatedCombination.add(lineId);
