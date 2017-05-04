@@ -113,7 +113,7 @@
 				%>
 						<tr>
 							<td><%=index %></td>
-							<td><%=name %></td>
+							<td><%=id %> - <%=name %></td>
 							<td>
 							<%
 							if(mode.equals("foot")){	
@@ -204,21 +204,9 @@
 				var startLat = parseFloat(<%=route.getStartCoordinates()[0] %>); 
 				var startLng = parseFloat(<%=route.getStartCoordinates()[1] %>);
 				var startMarkerContent = "Start Point<br>";
-				//startMarkerContent += "latitude: "+startLat+"<br>";
-				//startMarkerContent += "longitude: "+startLng+"<br>";
 		    	var startMarker = L.marker([startLat, startLng]).addTo(map);
 				startMarker.bindPopup(startMarkerContent);
 		        latLngs.push([startLat, startLng]);
-		        //prepare arriveMarker
-				var arriveLat = parseFloat(<%=route.getArriveCoordinates()[0] %>); 
-				var arriveLng = parseFloat(<%=route.getArriveCoordinates()[1] %>);
-				var arriveMarkerContent = "Arrive Point<br>";
-				//arriveMarkerContent += "latitude: "+arriveLat+"<br>";
-				//arriveMarkerContent += "longitude: "+arriveLng+"<br>";
-		    	var arriveMarker = L.marker([arriveLat, arriveLng]).addTo(map);
-				arriveMarker.bindPopup(arriveMarkerContent);
-		        latLngs.push([arriveLat, arriveLng]);
-				
 				<%
 				int i = 0;
 				for(BusStop busStop: busStops){
@@ -229,10 +217,8 @@
 					double lat = busStop.getLat();
 					double lng = busStop.getLng();
 					String line = modes.get(i);
-					i++;
-					
 				%>
-					//prepare message to show into the popup
+					//prepare intermediate marker
 					var markerContent<%=id%> = "id: <%=id %><br>";
 					markerContent<%=id%> += "name: <%=name %><br>";
 					markerContent<%=id%> += "line: <a href='stops.jsp?line=<%=line%>'><%=line%></a>";
@@ -245,11 +231,56 @@
 					marker<%=id %>.on('click', onMarker<%=id %>Click);
 				
 					latLngs.push([<%=lat %>, <%=lng %>]);
+				
 				<%
+					i++;
 				}
 				%>
+				//prepare arriveMarker
+				var arriveLat = parseFloat(<%=route.getArriveCoordinates()[0] %>); 
+				var arriveLng = parseFloat(<%=route.getArriveCoordinates()[1] %>);
+				var arriveMarkerContent = "Arrive Point<br>";
+		    	var arriveMarker = L.marker([arriveLat, arriveLng]).addTo(map);
+				arriveMarker.bindPopup(arriveMarkerContent);
+		        latLngs.push([arriveLat, arriveLng]);
+				
+		      	//connect start point to route
+				var startPoint = latLngs[0];
+				var firstPoint = latLngs[1];
+		        connect2Points(startPoint,firstPoint,true);
+				
+		        //connect the points of the route
+				<% 
+				int numberOfPoints = busStops.size();
+				for(int j = 0; j < numberOfPoints-1; j++){
+					if(modes.get(j).equals("foot") && modes.get(j+1).equals("foot")){
+					%>	
+					connect2Points(latLngs[<%=j+1%>], latLngs[<%=j+2%>], true);
+					<%
+					}else{
+					%>
+					connect2Points(latLngs[<%=j+1%>], latLngs[<%=j+2%>], false);
+					<%
+					}
+				}
+				%>
+				//connect arrive point to route
+				var lastPoint = latLngs[latLngs.length-2];
+				var arrivePoint = latLngs[latLngs.length-1];
+		        connect2Points(lastPoint,arrivePoint,true);
+				
 				map.fitBounds(latLngs);
 				startMarker.openPopup();
+				
+				
+				function connect2Points(a, b, dashed){
+					if(dashed){
+						var polyline = L.polyline([a,b], {color: 'red', dashArray: '10,10'}).addTo(map);	
+					}else{
+						var polyline = L.polyline([a,b], {color: 'green'}).addTo(map);
+					}
+					
+				}
 			<%
 			}
 			%>
