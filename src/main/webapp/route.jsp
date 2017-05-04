@@ -91,7 +91,7 @@
 		<table class="table table-striped">
 		  	<thead>
 		  		<tr>
-		  			<th>Id</th>
+		  			<th>Sequence</th>
 		  			<th>Name</th>
 		  			<th>Line</th>
 		  		</tr>
@@ -112,9 +112,22 @@
 						
 				%>
 						<tr>
-							<td><%=id %></td>
+							<td><%=index %></td>
 							<td><%=name %></td>
-							<td><%=mode %></td>
+							<td>
+							<%
+							if(mode.equals("foot")){	
+							%>	
+								foot
+							<%
+							}
+							else{
+							%>
+								<a href="stops.jsp?line=<%=mode%>"><%=mode %></a>	
+							<%
+							}
+							%>
+							</td>
 						</tr>
 				<% 	
 					}
@@ -222,7 +235,7 @@
 					//prepare message to show into the popup
 					var markerContent<%=id%> = "id: <%=id %><br>";
 					markerContent<%=id%> += "name: <%=name %><br>";
-					markerContent<%=id%> += "line: <%=line %>";
+					markerContent<%=id%> += "line: <a href='stops.jsp?line=<%=line%>'><%=line%></a>";
 					var marker<%=id %> = L.marker([<%=lat %>, <%=lng %>]).addTo(map);
 					//link the marker to the popup message
 					marker<%=id %>.bindPopup(markerContent<%=id%>);
