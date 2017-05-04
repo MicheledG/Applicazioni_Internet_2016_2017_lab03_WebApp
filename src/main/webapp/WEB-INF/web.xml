@@ -22,4 +22,8 @@
   	<filter-name>HibernateSessionRequestFilter</filter-name>
   	<url-pattern>/route.jsp</url-pattern>
   </filter-mapping>
+  <filter-mapping>
+  	<filter-name>HibernateSessionRequestFilter</filter-name>
+  	<url-pattern>/computeRoute</url-pattern>
+  </filter-mapping>
 </web-app>

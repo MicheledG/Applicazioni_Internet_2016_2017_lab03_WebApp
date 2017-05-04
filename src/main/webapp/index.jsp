@@ -41,7 +41,8 @@
       <a class="navbar-brand" href="index.jsp">Bus WebApp</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="index.jsp">Lines</a></li>
+      	<li class="active"><a href="index.jsp">Lines</a></li>
+   		<li><a href="route.jsp">Route</a></li>
     </ul>
   </div>
 </nav>

@@ -1,4 +1,4 @@
-01) http://localhost:8080/ai_esercitazione_03_WebApp/route.jsp?startLat=45.073751&startLng=7.600959&arriveLat=45.074289&arriveLng=7.614928&radius=250
-02) http://localhost:8080/ai_esercitazione_03_WebApp/route.jsp?startLat=45.073751&startLng=7.600959&arriveLat=45.030585&arriveLng=7.667748&radius=250
-03) http://localhost:8080/ai_esercitazione_03_WebApp/route.jsp?startLat=45.076236&startLng=7.591384&arriveLat=45.081106&arriveLng=7.767666&radius=250
-04) 
+01) http://localhost:8080/ai_esercitazione_03_WebApp/computeRoute?startLat=45.073751&startLng=7.600959&arriveLat=45.074289&arriveLng=7.614928&radius=250
+02) http://localhost:8080/ai_esercitazione_03_WebApp/computeRoute?startLat=45.073751&startLng=7.600959&arriveLat=45.030585&arriveLng=7.667748&radius=250
+03) http://localhost:8080/ai_esercitazione_03_WebApp/computeRoute?startLat=45.076236&startLng=7.591384&arriveLat=45.081106&arriveLng=7.767666&radius=250
+04) http://localhost:8080/ai_esercitazione_03_WebApp/computeRoute?startLat=45.029396&startLng=7.558650&arriveLat=45.109804&arriveLng=7.641264&radius=250

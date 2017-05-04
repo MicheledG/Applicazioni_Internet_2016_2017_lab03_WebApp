@@ -52,6 +52,7 @@
     </div>
     <ul class="nav navbar-nav">
       <li><a href="index.jsp">Lines</a></li>
+      <li><a href="route.jsp">Route</a></li>
     </ul>
   </div>
 </nav>
