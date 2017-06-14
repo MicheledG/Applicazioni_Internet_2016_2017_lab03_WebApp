@@ -95,7 +95,7 @@ public class RoutingServiceImpl implements RoutingService {
 
 	private void computeRouteBusSegmentPortions(RouteBusSegment routeBusSegment) {
 		
-		//retrieve all the possibile lines linking two stops
+		//retrieve all the possible lines linking two stops
 		List<List<String>> listOfLinesForPortions = new ArrayList<List<String>>();
 		for (int i = 0; i < routeBusSegment.getBusStops().size() -1; i++) {
 			List<String> listOfLines = linesService.findLinesConnectingStops(routeBusSegment.getBusStops().get(i), routeBusSegment.getBusStops().get(i+1));
